@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import { env } from './config/env';
 import { authenticate, authorize } from './middleware/auth';
 import { enforceIdempotency } from './middleware/idempotency';
+import { rateLimit } from './middleware/rateLimit';
 import merchantRoutes from './routes/merchants';
 import orderRoutes from './routes/orders';
 import productRoutes from './routes/products';
@@ -12,6 +13,7 @@ import { redisSubscriber } from './services/redis';
 
 const app = express();
 app.use(express.json());
+app.use(rateLimit);
 
 app.get('/healthz', (_req, res) => {
   res.json({ ok: true });

@@ -18,7 +18,7 @@ export async function enforceIdempotency(req: Request, res: Response, next: Next
   const isNew = await redis.set(lockKey, 'PROCESSED', 'EX', env.idempotencyTtlSec, 'NX');
 
   if (!isNew) {
-    res.status(409).json({ error: 'Conflict: Duplicate execution frame detected for this transaction signature' });
+    res.status(409).json({ error: 'Conflict: Duplicate request detected for this idempotency key' });
     return;
   }
 

@@ -1,4 +1,5 @@
 const API_BASE = process.env.API_BASE || 'http://localhost:8080/api/v1';
+const WS_BASE = process.env.WS_BASE || API_BASE.replace(/^http/, 'ws').replace('/api/v1', '');
 
 export async function getNearbyMerchants(latitude, longitude) {
   const response = await fetch(`${API_BASE}/merchants/nearby?latitude=${latitude}&longitude=${longitude}`);
@@ -22,7 +23,7 @@ export async function createOrder(payload, token, idempotencyKey) {
 }
 
 export function subscribeOrderTracking(orderId, onEvent) {
-  const ws = new WebSocket(`ws://localhost:8080/ws?orderId=${orderId}`);
+  const ws = new WebSocket(`${WS_BASE}/ws?orderId=${orderId}`);
   ws.onmessage = (event) => onEvent(JSON.parse(event.data));
   return () => ws.close();
 }

@@ -23,7 +23,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
     req.user = payload;
     next();
   } catch {
-    res.status(403).json({ error: 'Invalid security context signature' });
+    res.status(403).json({ error: 'Invalid or expired authentication token' });
   }
 }
 

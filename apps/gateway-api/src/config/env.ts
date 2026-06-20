@@ -12,8 +12,10 @@ function required(name: string, fallback?: string): string {
 
 export const env = {
   port: Number(process.env.PORT ?? 8080),
-  jwtSecret: required('JWT_SECRET', 'super_secure_key'),
+  jwtSecret: required('JWT_SECRET'),
   redisUrl: required('REDIS_URL', 'redis://127.0.0.1:6379/0'),
-  databaseUrl: required('DATABASE_URL', '******127.0.0.1:5432/kinetix'),
+  databaseUrl: required('DATABASE_URL'),
   idempotencyTtlSec: Number(process.env.IDEMPOTENCY_TTL_SEC ?? 86400),
+  rateLimitWindowSec: Number(process.env.RATE_LIMIT_WINDOW_SEC ?? 60),
+  rateLimitMaxRequests: Number(process.env.RATE_LIMIT_MAX_REQUESTS ?? 240),
 };

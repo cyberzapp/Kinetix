@@ -8,12 +8,12 @@ Production-ready hyperlocal open-network commerce engine with:
 
 ## Repository Layout
 
-- `/home/runner/work/Kinetix/Kinetix/apps/gateway-api` – API ingestion, idempotency, auth, matching orchestration, WebSocket updates
-- `/home/runner/work/Kinetix/Kinetix/apps/worker-engine` – Redis stream consumer and batched DB candidate writer
-- `/home/runner/work/Kinetix/Kinetix/database/architecture.sql` – schema, enums, indexes, and RLS policies
-- `/home/runner/work/Kinetix/Kinetix/apps/customer-app` – customer integration module
-- `/home/runner/work/Kinetix/Kinetix/apps/merchant-app` – merchant integration module
-- `/home/runner/work/Kinetix/Kinetix/apps/driver-app` – driver integration module with geofence helper
+- `apps/gateway-api` – API ingestion, idempotency, auth, matching orchestration, WebSocket updates
+- `apps/worker-engine` – Redis stream consumer and batched DB candidate writer
+- `database/architecture.sql` – schema, enums, indexes, and RLS policies
+- `apps/customer-app` – customer integration module
+- `apps/merchant-app` – merchant integration module
+- `apps/driver-app` – driver integration module with geofence helper
 
 ## Core Capabilities
 
@@ -29,7 +29,7 @@ Production-ready hyperlocal open-network commerce engine with:
 ## Quick Start (Docker)
 
 ```bash
-cd /home/runner/work/Kinetix/Kinetix
+cd Kinetix
 docker compose up --build
 ```
 
@@ -44,7 +44,7 @@ curl http://localhost:8080/healthz
 ### Gateway API
 
 ```bash
-cd /home/runner/work/Kinetix/Kinetix/apps/gateway-api
+cd apps/gateway-api
 npm install
 npm run build
 npm test
@@ -54,7 +54,7 @@ npm run dev
 ### Worker Engine
 
 ```bash
-cd /home/runner/work/Kinetix/Kinetix/apps/worker-engine
+cd apps/worker-engine
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -83,7 +83,7 @@ python main.py
 
 ## Production Notes
 
-- Apply `/home/runner/work/Kinetix/Kinetix/database/architecture.sql` before running services.
+- Apply `database/architecture.sql` before running services.
 - Set a strong `JWT_SECRET` in environment.
 - Keep Redis + Postgres on private network boundaries.
 - Use per-request DB session settings (`app.current_merchant_id`, `app.current_agent_id`) when enabling strict RLS in runtime connections.

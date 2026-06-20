@@ -20,10 +20,12 @@ services:
       context: ./apps/gateway-api
     environment:
       PORT: 8080
-      JWT_SECRET: super_secure_key
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in your environment}
       REDIS_URL: redis://redis:6379/0
-      DATABASE_URL: ******postgres:5432/kinetix
-      IDEMPOTENCY_TTL_SEC: 86400
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in your environment}
+      IDEMPOTENCY_TTL_SEC: ${IDEMPOTENCY_TTL_SEC:-86400}
+      RATE_LIMIT_WINDOW_SEC: ${RATE_LIMIT_WINDOW_SEC:-60}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-240}
     ports:
       - "8080:8080"
     depends_on:
@@ -35,9 +37,9 @@ services:
       context: ./apps/worker-engine
     environment:
       REDIS_URL: redis://redis:6379/0
-      DATABASE_URL: ******postgres:5432/kinetix
-      BATCH_SIZE: 500
-      FLUSH_INTERVAL: 2
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in your environment}
+      BATCH_SIZE: ${BATCH_SIZE:-500}
+      FLUSH_INTERVAL: ${FLUSH_INTERVAL:-2}
     depends_on:
       - redis
       - postgres
