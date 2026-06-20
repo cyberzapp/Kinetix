@@ -1,0 +1,45 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: kinetix
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/architecture.sql:/docker-entrypoint-initdb.d/01-architecture.sql:ro
+
+  gateway-api:
+    build:
+      context: ./apps/gateway-api
+    environment:
+      PORT: 8080
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in your environment}
+      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in your environment}
+      IDEMPOTENCY_TTL_SEC: ${IDEMPOTENCY_TTL_SEC:-86400}
+      RATE_LIMIT_WINDOW_SEC: ${RATE_LIMIT_WINDOW_SEC:-60}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-240}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - postgres
+
+  worker-engine:
+    build:
+      context: ./apps/worker-engine
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in your environment}
+      BATCH_SIZE: ${BATCH_SIZE:-500}
+      FLUSH_INTERVAL: ${FLUSH_INTERVAL:-2}
+    depends_on:
+      - redis
+      - postgres
