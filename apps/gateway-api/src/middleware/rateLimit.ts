@@ -3,7 +3,9 @@ import { env } from '../config/env';
 import { redis } from '../services/redis';
 
 export async function rateLimit(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const keyIdentity = req.user?.id ?? req.ip;
+  const forwarded = req.headers['x-forwarded-for'];
+  const forwardedIp = typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : undefined;
+  const keyIdentity = req.user?.id ?? forwardedIp ?? req.ip ?? 'unknown';
   const key = `ratelimit:${keyIdentity}:${req.method}:${req.path}`;
 
   const count = await redis.incr(key);

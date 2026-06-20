@@ -19,11 +19,13 @@ Production-ready hyperlocal open-network commerce engine with:
 
 - JWT auth and role-based authorization
 - Distributed idempotency (`X-Idempotency-Key`)
+- Redis-backed API rate limiting
 - Redis geospatial driver index (`drivers:locations`)
 - Atomic order claiming lock (`lock:order:{order_id}`)
 - Pub/Sub matching stream (`order_matching_stream`)
 - Batched candidate upsert + order state progression
 - WebSocket order tracking updates (`/ws?orderId=<id>`)
+- Authenticated WebSocket order tracking (`/ws?orderId=<id>&token=<jwt>`)
 - PostgreSQL Row-Level Security for merchant/agent isolation
 
 ## Quick Start (Docker)

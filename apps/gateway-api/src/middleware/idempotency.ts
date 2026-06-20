@@ -10,7 +10,7 @@ export async function enforceIdempotency(req: Request, res: Response, next: Next
 
   const idempotencyKey = req.headers['x-idempotency-key'];
   if (!idempotencyKey || typeof idempotencyKey !== 'string') {
-    res.status(400).json({ error: 'Idempotency Key required to mitigate duplicate requests' });
+    res.status(400).json({ error: 'Idempotency key required to mitigate duplicate requests' });
     return;
   }
 

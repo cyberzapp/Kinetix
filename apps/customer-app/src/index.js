@@ -23,7 +23,8 @@ export async function createOrder(payload, token, idempotencyKey) {
 }
 
 export function subscribeOrderTracking(orderId, onEvent) {
-  const ws = new WebSocket(`${WS_BASE}/ws?orderId=${orderId}`);
+  const token = encodeURIComponent(process.env.WS_TOKEN || '');
+  const ws = new WebSocket(`${WS_BASE}/ws?orderId=${orderId}&token=${token}`);
   ws.onmessage = (event) => onEvent(JSON.parse(event.data));
   return () => ws.close();
 }

@@ -16,7 +16,7 @@ r = redis.Redis.from_url(os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0'))
 db_conn = create_connection()
 db_conn.autocommit = True
 
-memory_buffer: List[Tuple[str, str, float, float, float]] = []
+memory_buffer: List[Tuple[str, str, float, float, float]] = []  # (order_id, agent_id, min_payout, max_payout, distance_meters)
 last_flush_time = time.time()
 
 
@@ -71,7 +71,8 @@ def process_order_matching_events() -> None:
         if len(memory_buffer) >= BATCH_SIZE or (time.time() - last_flush_time) >= FLUSH_INTERVAL:
             flush_candidates_to_postgres()
 
-        time.sleep(0.01)
+        if not message:
+            time.sleep(0.01)
 
 
 if __name__ == '__main__':

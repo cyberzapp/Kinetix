@@ -1,5 +1,6 @@
 import express from 'express';
 import http from 'http';
+import jwt from 'jsonwebtoken';
 import { WebSocketServer } from 'ws';
 import { env } from './config/env';
 import { authenticate, authorize } from './middleware/auth';
@@ -30,6 +31,19 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 wss.on('connection', (socket, request) => {
   const url = new URL(request.url ?? '/', `http://${request.headers.host}`);
   const orderId = url.searchParams.get('orderId');
+  const token = url.searchParams.get('token');
+
+  if (!token) {
+    socket.close(1008, 'Authentication token required');
+    return;
+  }
+
+  try {
+    jwt.verify(token, env.jwtSecret);
+  } catch {
+    socket.close(1008, 'Invalid authentication token');
+    return;
+  }
 
   const listener = (channel: string, message: string) => {
     if (channel !== 'order_updates') {

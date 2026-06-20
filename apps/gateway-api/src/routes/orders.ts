@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { env } from '../config/env';
 import { db } from '../services/db';
 import { redis } from '../services/redis';
 import { broadcastMatchingCandidates } from '../services/orderMatching';
@@ -98,7 +99,7 @@ router.post('/claim-agent', async (req, res) => {
 
   const orderId = parsed.data.orderId;
   const lockKey = `lock:order:${orderId}`;
-  const lock = await redis.set(lockKey, agentId, 'EX', 15, 'NX');
+  const lock = await redis.set(lockKey, agentId, 'EX', env.orderClaimLockTtlSec, 'NX');
   if (!lock) {
     return res.status(409).json({ error: 'Order is currently being claimed by another agent' });
   }
